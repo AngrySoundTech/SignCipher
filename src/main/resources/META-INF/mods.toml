@@ -1,18 +1,18 @@
 modLoader="kotlinfml"
 loaderVersion="[1.4,)"
 
-issueTrackerURL="https://github.com/AngrySoundTech/ForgeKotlinTemplate/issues"
-displayURL="https://github.com/AngrySoundTech/ForgeKotlinTemplate"
+issueTrackerURL="https://github.com/AngrySoundTech/SignPad/issues"
+displayURL="https://github.com/AngrySoundTech/SignPad"
 authors="AngrySoundTech"
 credits=""
 
 [[mods]]
-modId="forgekotlintemplate"
+modId="signpad"
 version="${version}"
-displayName="ForgeKotlinTemplate"
+displayName="SignPad"
 description=""
 
-[[dependencies.forgekotlintemplate]]
+[[dependencies.signpad]]
 modId="forge"
 mandatory=true
 versionRange="[28.1.92,)"
