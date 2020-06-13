@@ -1,0 +1,30 @@
+# Editors#
+
+## IDEA
+.idea/
+*.iml
+*.ipr
+*.iws
+
+## VIM
+*.swp
+
+# BUILD
+
+## Gradle
+/.gradle
+build/
+/run*/
+/classes/
+
+# OS
+
+## MacOS
+*/.DS_Store
+.DS_Store
+.DS_Store?
+.Spotlight-V100
+.Trashes
+Icon?
+ehthumbs.db
+Thumbs.db

@@ -1,0 +1,143 @@
+/////////////////////////////
+// BuildScript and Plugins //
+/////////////////////////////
+
+buildscript {
+    repositories {
+        jcenter()
+        maven {
+            name 'forge'
+            url 'http://files.minecraftforge.net/maven'
+        }
+    }
+    dependencies {
+        classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '3.+', changing: true
+    }
+}
+
+plugins {
+    id 'org.jetbrains.kotlin.jvm' version "1.3.11"
+    id "com.github.hierynomus.license" version "0.15.0"
+    id 'com.github.johnrengelman.shadow' version '4.0.4'
+}
+
+apply plugin: 'net.minecraftforge.gradle'
+
+//////////////////
+// Dependencies //
+//////////////////
+
+repositories {
+    mavenCentral()
+    maven {
+        url 'https://files.minecraftforge.net/maven'
+    }
+    maven {
+        url 'https://minecraft.curseforge.com/api/maven/'
+    }
+}
+
+configurations {
+    embed
+    compile.extendsFrom embed
+}
+
+dependencies {
+    minecraft group: 'net.minecraftforge', name: 'forge', 'version': "$minecraft_version-$forge_version"
+
+    compile group: 'kottle', name: 'Kottle', 'version': kottle_version
+}
+
+minecraft {
+    mappings channel: 'snapshot', version: forge_mappings
+
+    runs {
+        client {
+            properties 'forge.logging.console.level': 'debug'
+            properties 'fml.earlyprogresswindow': 'false'
+            workingDirectory project.file('run')
+            mods {
+                kotlinforgetemplate {
+                    source sourceSets.main
+                }
+            }
+        }
+        server {
+            properties 'forge.logging.console.level': 'debug'
+            workingDirectory project.file('run')
+            mods {
+                kotlingforgetemplate {
+                    source sourceSets.main
+                }
+            }
+        }
+    }
+}
+
+///////////////
+// Artifacts //
+///////////////
+
+version = "$minecraft_version-$mod_version"
+
+tasks {
+    compileKotlin {
+        kotlinOptions.jvmTarget = "1.8"
+    }
+    compileTestKotlin {
+        kotlinOptions.jvmTarget = "1.8"
+    }
+}
+
+processResources {
+    inputs.property "version", project.version
+
+    from(sourceSets.main.resources.srcDirs) {
+        include 'META-INF/mods.toml'
+        expand 'version':project.version
+
+    }
+}
+
+shadowJar {
+    classifier '' // Replace the default jar
+
+    configurations = [project.configurations.embed]
+
+    // Any relocations that need to be done
+}
+
+tasks.build.dependsOn shadowJar
+
+reobf {
+    shadowJar {}
+}
+
+task deobfJar(type: Jar) {
+    from sourceSets.main.output
+    classifier = 'deobf'
+}
+
+task sourcesJar(type: Jar) {
+    from sourceSets.main.allJava
+    classifier = 'sources'
+}
+
+task javadocJar(type: Jar, dependsOn: javadoc) {
+    classifier = 'javadoc'
+    from javadoc.destinationDir
+}
+
+artifacts {
+    archives deobfJar
+    archives sourcesJar
+    archives javadocJar
+}
+
+///////////////
+// Licencing //
+///////////////
+
+license {
+    include "**/*.kt"
+}
