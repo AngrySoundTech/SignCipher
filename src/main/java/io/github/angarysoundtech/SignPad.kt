@@ -17,9 +17,18 @@
  */
 package io.github.angarysoundtech
 
+import io.github.angarysoundtech.pad.PadLibrary
+import io.github.angarysoundtech.renderer.EncryptedSignTileEntityRenderer
+import net.alexwells.kottle.FMLKotlinModLoadingContext
+import net.minecraft.client.Minecraft
+import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher
+import net.minecraft.tileentity.SignTileEntity
+import net.minecraftforge.fml.ModLoadingContext
 import net.minecraftforge.fml.common.Mod
+import net.minecraftforge.fml.config.ModConfig
 import org.apache.logging.log4j.LogManager
 import org.apache.logging.log4j.Logger
+import java.io.File
 
 const val MOD_ID = "signpad"
 
@@ -28,7 +37,16 @@ object SignPad {
 
     val logger: Logger = LogManager.getLogger(MOD_ID)
 
-    init {
-    }
+    val library: PadLibrary
 
+    init {
+        TileEntityRendererDispatcher.instance.setSpecialRenderer(
+            SignTileEntity::class.java,
+            EncryptedSignTileEntityRenderer()
+        )
+        TileEntityRendererDispatcher.instance.getRenderer<SignTileEntity>(SignTileEntity::class.java)
+            .setRendererDispatcher(TileEntityRendererDispatcher.instance)
+
+        library = PadLibrary(File(Minecraft.getInstance().gameDir, "signpad/pads.json"))
+    }
 }
