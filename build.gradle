@@ -57,7 +57,7 @@ minecraft {
             properties 'fml.earlyprogresswindow': 'false'
             workingDirectory project.file('run')
             mods {
-                signCipher {
+                signcipher {
                     source sourceSets.main
                 }
             }
@@ -66,7 +66,7 @@ minecraft {
             properties 'forge.logging.console.level': 'debug'
             workingDirectory project.file('run')
             mods {
-                signCipher {
+                signcipher {
                     source sourceSets.main
                 }
             }
