@@ -19,13 +19,16 @@ package io.github.angarysoundtech.handler
 
 import io.github.angarysoundtech.MOD_ID
 import io.github.angarysoundtech.SignCipher
-import io.github.angarysoundtech.util.encrypt
+import io.github.angarysoundtech.util.*
+import net.minecraft.client.Minecraft
 import net.minecraft.client.gui.screen.EditSignScreen
 import net.minecraft.client.gui.widget.Widget
 import net.minecraft.client.gui.widget.button.Button
 import net.minecraft.client.resources.I18n
 import net.minecraft.tileentity.SignTileEntity
 import net.minecraft.util.text.StringTextComponent
+import net.minecraft.util.text.Style
+import net.minecraft.util.text.TextFormatting
 import net.minecraftforge.api.distmarker.Dist
 import net.minecraftforge.client.event.GuiScreenEvent
 import net.minecraftforge.eventbus.api.SubscribeEvent
@@ -34,8 +37,6 @@ import kotlin.math.max
 
 @Mod.EventBusSubscriber(Dist.CLIENT, modid = MOD_ID)
 object InitGuiHandler {
-
-    private val regex = Regex("^\\[(.+)]$")
 
     @SubscribeEvent
     fun onInitGuiEvent(event: GuiScreenEvent.InitGuiEvent) {
@@ -51,22 +52,27 @@ object InitGuiHandler {
             tileField.isAccessible = true
             val tile = tileField.get(event.gui) as SignTileEntity
 
-            event.addWidget(Button(gui.width / 2 - 100, maxY + 24, 200, 20, I18n.format("signCipher.gui.encrypt")) { button ->
-                val match = regex.find(tile.getText(0).unformattedComponentText)
+            event.addWidget(Button(gui.width / 2 - 100, maxY + 24, 200, 20, I18n.format("signcipher.gui.encrypt")) { button ->
+                val tag = getTagForSign(tile)
 
-                // If the first line of the sign matches our expected format
-                if (match != null) {
-                    val key = match.groupValues[1]
+                if (tag == null) {
+                    Minecraft.getInstance().player.sendMessage(
+                        StringTextComponent(I18n.format("signcipher.chat.badtag", tile.getText(0).formattedText))
+                            .setStyle(Style().setColor(TextFormatting.RED))
+                    )
+                } else { // If the tag is formatted properly
+                    val key = getKeyForSign(tile)
 
-                    // If we have an OTP for the key
-                    if (SignCipher.library.keys.containsKey(key)) {
-                        // Encrypt each following line
-                        for (i in 1..3) {
-                            val encrypted = encrypt(tile.getText(i).formattedText, SignCipher.library.keys[key]!!)
-                            tile.setText(i, StringTextComponent(encrypted))
-                        }
+                    if (key != null) {
+                        encryptSign(tile, key)
+                    } else { // If we don't know the key to use
+                        Minecraft.getInstance().player.sendMessage(
+                            StringTextComponent(I18n.format("signcipher.chat.unknowntag", tag))
+                                .setStyle(Style().setColor(TextFormatting.RED))
+                        )
                     }
                 }
+
 
                 tile.markDirty()
                 gui.minecraft.displayGuiScreen(null)

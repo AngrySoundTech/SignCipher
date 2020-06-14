@@ -17,30 +17,25 @@
  */
 package io.github.angarysoundtech.renderer
 
-import io.github.angarysoundtech.SignCipher
-import io.github.angarysoundtech.util.decrypt
+import io.github.angarysoundtech.util.decryptSign
+import io.github.angarysoundtech.util.getKeyForSign
+import io.github.angarysoundtech.util.getTagForSign
+import net.minecraft.client.Minecraft
 import net.minecraft.client.renderer.tileentity.SignTileEntityRenderer
 import net.minecraft.tileentity.SignTileEntity
-import net.minecraft.util.text.StringTextComponent
 
 class EncryptedSignTileEntityRenderer : SignTileEntityRenderer() {
 
-    private val regex = Regex("^\\[(.+)]$")
-
     override fun render(te: SignTileEntity, x: Double, y: Double, z: Double, partialTicks: Float, destroyStage: Int) {
-        if (!te.isEditable) {
-            val match = regex.find(te.getText(0).unformattedComponentText)
+        if (Minecraft.getInstance().currentScreen == null) {
+            val tag = getTagForSign(te)
 
-            if (match != null) {
-                val key = match.groupValues[1]
+            if (tag != null) {
+                val key = getKeyForSign(te)
 
-                if (SignCipher.library.keys.containsKey(key)) {
-                    for (i in 1..3) {
-                        val decrypted = decrypt(te.getText(i).formattedText, SignCipher.library.keys[key]!!)
-                        te.setText(i, StringTextComponent(decrypted))
-                    }
+                if (key != null) {
+                    decryptSign(te, key, tag)
                 }
-                te.setText(0, StringTextComponent("<$key>"))
             }
         }
 

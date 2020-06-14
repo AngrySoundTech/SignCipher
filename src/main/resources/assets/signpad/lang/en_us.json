@@ -1,3 +1,5 @@
 {
-  "signCipher.gui.encrypt": "Encrypt"
+  "signcipher.gui.encrypt": "Encrypt",
+  "signcipher.chat.unknowntag": "Unknown tag: %s",
+  "signcipher.chat.badtag": "\"%s\" is not a valid tag format! Tags must be formatted as [<name>]"
 }
