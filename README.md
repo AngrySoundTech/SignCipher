@@ -1,6 +1,6 @@
-# SignPad
+# SignCipher
 
-Encrypt the contents of a sign in minecraft with a One Time Pad
+Encrypt the contents of a sign in minecraft
 
 ## Developing / Compiling
 1. `gradle [setupDevWorkspace|setupDecompWorkspace] [eclipse|idea]`

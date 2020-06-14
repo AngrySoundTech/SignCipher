@@ -1,18 +1,18 @@
 modLoader="kotlinfml"
 loaderVersion="[1.4,)"
 
-issueTrackerURL="https://github.com/AngrySoundTech/SignPad/issues"
-displayURL="https://github.com/AngrySoundTech/SignPad"
+issueTrackerURL="https://github.com/AngrySoundTech/SignCipher/issues"
+displayURL="https://github.com/AngrySoundTech/SignCipher"
 authors="AngrySoundTech"
 credits=""
 
 [[mods]]
-modId="signpad"
+modId="signcipher"
 version="${version}"
-displayName="SignPad"
+displayName="SignCipher"
 description=""
 
-[[dependencies.signpad]]
+[[dependencies.signcipher]]
 modId="forge"
 mandatory=true
 versionRange="[28.1.92,)"
